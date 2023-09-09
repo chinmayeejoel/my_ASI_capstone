@@ -26,9 +26,12 @@ node{
     }
      stage('Build') {
             steps {
-                script {
-                    // Your Maven build steps here
-                    sh "${mavenCMD} clean install"
+                withMaven(
+                    maven: 'ASI_maven', // Replace with your Maven tool name defined in Jenkins
+                    goals: 'clean install' // Specify Maven goals you want to execute
+                )
+		    {
+                     sh "${mavenCMD} clean install"
                 }
             }
      }
