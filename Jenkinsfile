@@ -1,39 +1,27 @@
 node{
     
-    def mavenHome, mavenCMD, docker, tag, dockerHubUser, containerName, httpPort = ""
-  stage('Maven Build'){
-	    step {
-	 withMaven(
-                    maven: 'ASI_maven', // Replace with your Maven tool name defined in Jenkins
-                    goals: 'clean install' // Specify Maven goals you want to execute
-                )
-	    {
-        sh "${mavenCMD} clean package"        
-          }
-	}
-}
-        
+    def docker, tag, dockerHubUser, containerName, httpPort = ""
+      
     stage('Prepare Environment'){
         echo 'Initialize Environment'
-	mavenHome = tool name: 'maven' , type: 'maven'
-        mavenCMD = "${mavenHome}/bin/mvn"
-        tag="3.0"
+	tag="3.0"
 	dockerHubUser="chinmayeejoel"
 	containerName="insure-me"
 	httpPort="8081"
     }
     
-    stage('Code Checkout'){
+      stage('Code Checkout'){
         try{
             checkout scm
         }
         catch(Exception e){
             echo 'Exception occured in Git Code Checkout Stage'
             currentBuild.result = "FAILURE"
-            //emailext body: '''Dear All,
-            //The Jenkins job ${JOB_NAME} has been failed. Request you to please have a look at it immediately by clicking on the below link. 
-            //${BUILD_URL}''', subject: 'Job ${JOB_NAME} ${BUILD_NUMBER} is failed', to: 'jenkins@gmail.com'
         }
+    }
+    
+    stage('Maven Build'){
+        sh "mvn clean package"        
     }
         
   
