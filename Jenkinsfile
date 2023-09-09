@@ -1,7 +1,18 @@
 node{
     
     def mavenHome, mavenCMD, docker, tag, dockerHubUser, containerName, httpPort = ""
-    
+  stage('Maven Build'){
+	    step {
+	 withMaven(
+                    maven: 'ASI_maven', // Replace with your Maven tool name defined in Jenkins
+                    goals: 'clean install' // Specify Maven goals you want to execute
+                )
+	    {
+        sh "${mavenCMD} clean package"        
+          }
+	}
+}
+        
     stage('Prepare Environment'){
         echo 'Initialize Environment'
 	mavenHome = tool name: 'maven' , type: 'maven'
@@ -25,18 +36,7 @@ node{
         }
     }
         
-    stage('Maven Build'){
-	    step {
-	 withMaven(
-                    maven: 'ASI_maven', // Replace with your Maven tool name defined in Jenkins
-                    goals: 'clean install' // Specify Maven goals you want to execute
-                )
-	    {
-        sh "${mavenCMD} clean package"        
-          }
-	}
-}
-    
+  
     stage('Publish Test Reports'){
         publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'target/surefire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
     }
