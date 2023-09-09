@@ -4,6 +4,10 @@ node{
     
     stage('Prepare Environment'){
         echo 'Initialize Environment'
+	 withMaven(
+                    maven: 'ASI_maven', // Replace with your Maven tool name defined in Jenkins
+                    goals: 'clean install' // Specify Maven goals you want to execute
+                )
         mavenHome = tool name: 'maven' , type: 'maven'
         mavenCMD = "/usr/share/maven/bin/mvn"
         tag="3.0"
@@ -24,18 +28,7 @@ node{
             //${BUILD_URL}''', subject: 'Job ${JOB_NAME} ${BUILD_NUMBER} is failed', to: 'jenkins@gmail.com'
         }
     }
-     stage('Build') {
-            steps {
-                withMaven(
-                    maven: 'ASI_maven', // Replace with your Maven tool name defined in Jenkins
-                    goals: 'clean install' // Specify Maven goals you want to execute
-                )
-		    {
-                     sh "${mavenCMD} clean install"
-                }
-            }
-     }
-    
+        
     stage('Maven Build'){
         sh "${mavenCMD} clean package"        
     }
