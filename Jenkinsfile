@@ -24,6 +24,14 @@ node{
             //${BUILD_URL}''', subject: 'Job ${JOB_NAME} ${BUILD_NUMBER} is failed', to: 'jenkins@gmail.com'
         }
     }
+     stage('Build') {
+            steps {
+                script {
+                    // Your Maven build steps here
+                    sh "${mavenCMD} clean install"
+                }
+            }
+     }
     
     stage('Maven Build'){
         sh "${mavenCMD} clean package"        
